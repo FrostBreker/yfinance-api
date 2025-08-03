@@ -1,6 +1,6 @@
 # YFinance API Go Package
 
-[![Go Version](https://img.shields.io/badge/Go-1.19+-blue.svg)](https://golang.org)
+[![Go Version](https://img.shields.io/badge/Go-1.21+-blue.svg)](https://golang.org)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Tests](https://github.com/FrostBreker/yfinance-api/workflows/Tests/badge.svg)](https://github.com/FrostBreker/yfinance-api/actions)
 [![Go Report Card](https://goreportcard.com/badge/github.com/FrostBreker/yfinance-api)](https://goreportcard.com/report/github.com/FrostBreker/yfinance-api)
@@ -40,14 +40,14 @@ import (
 func main() {
     // Create a ticker for Apple Inc.
     ticker := yfinance.NewTicker("AAPL")
-    
+
     // Get current price
     price, err := ticker.FetchPriceValue()
     if err != nil {
         log.Fatal(err)
     }
     fmt.Printf("AAPL Current Price: %s\n", price.Fmt)
-    
+
     // Get dividend information
     dividend, err := ticker.FetchDividendInfo()
     if err != nil {
@@ -116,11 +116,11 @@ if isPaying {
     if err != nil {
         log.Fatal(err)
     }
-    
+
     fmt.Printf("Annual Dividend: %s\n", dividend.DividendRate.Fmt)
     fmt.Printf("Dividend Yield: %s\n", dividend.DividendYield.Fmt)
     fmt.Printf("Payout Ratio: %s\n", dividend.PayoutRatio.Fmt)
-    
+
     // Quick access methods
     yield, _ := ticker.FetchCurrentDividendYield()
     fmt.Printf("Yield (float): %.2f%%\n", yield*100)
@@ -212,13 +212,13 @@ symbols := []string{"AAPL", "MSFT", "GOOGL", "AMZN", "TSLA"}
 
 for _, symbol := range symbols {
     ticker := yfinance.NewTicker(symbol)
-    
+
     price, err := ticker.FetchPriceValue()
     if err != nil {
         fmt.Printf("Error fetching %s: %v\n", symbol, err)
         continue
     }
-    
+
     fmt.Printf("%s: %s\n", symbol, price.Fmt)
 }
 ```
@@ -227,22 +227,24 @@ for _, symbol := range symbols {
 
 ### Core Functions
 
-| Function | Description | Returns |
-|----------|-------------|---------|
-| `NewClient()` | Create a new YFinance API client | `*YFinanceAPI` |
-| `NewTicker(symbol)` | Create a ticker instance | `*Ticker` |
+| Function            | Description                      | Returns        |
+| ------------------- | -------------------------------- | -------------- |
+| `NewClient()`       | Create a new YFinance API client | `*YFinanceAPI` |
+| `NewTicker(symbol)` | Create a ticker instance         | `*Ticker`      |
 
 ### Ticker Methods
 
 #### Price & Information
-| Method | Description | Returns |
-|--------|-------------|---------|
+
+| Method               | Description                   | Returns           |
+| -------------------- | ----------------------------- | ----------------- |
 | `FetchInformation()` | Get comprehensive ticker info | `YahooTickerInfo` |
-| `FetchPriceValue()` | Get current stock price | `PriceValue` |
+| `FetchPriceValue()`  | Get current stock price       | `PriceValue`      |
 
 #### Historical Data
-| Method | Parameters | Description |
-|--------|------------|-------------|
+
+| Method                  | Parameters                          | Description               |
+| ----------------------- | ----------------------------------- | ------------------------- |
 | `FetchHistoricalData()` | `range, interval, period1, period2` | Get OHLCV historical data |
 
 **Range Options**: `1d`, `5d`, `1mo`, `3mo`, `6mo`, `1y`, `2y`, `5y`, `10y`, `ytd`, `max`
@@ -250,31 +252,35 @@ for _, symbol := range symbols {
 **Interval Options**: `1m`, `2m`, `5m`, `15m`, `30m`, `60m`, `90m`, `1h`, `1d`, `5d`, `1wk`, `1mo`, `3mo`
 
 #### Dividend Information
-| Method | Description | Returns |
-|--------|-------------|---------|
-| `FetchDividendInfo()` | Complete dividend information | `DividendInfo` |
-| `FetchCurrentDividendYield()` | Current dividend yield | `float64` |
-| `FetchDividendRate()` | Annual dividend per share | `float64` |
-| `IsDividendPaying()` | Check if stock pays dividends | `bool` |
+
+| Method                        | Description                   | Returns        |
+| ----------------------------- | ----------------------------- | -------------- |
+| `FetchDividendInfo()`         | Complete dividend information | `DividendInfo` |
+| `FetchCurrentDividendYield()` | Current dividend yield        | `float64`      |
+| `FetchDividendRate()`         | Annual dividend per share     | `float64`      |
+| `IsDividendPaying()`          | Check if stock pays dividends | `bool`         |
 
 #### Financial Analysis
-| Method | Description | Returns |
-|--------|-------------|---------|
-| `FetchFinancialData()` | Complete financial analysis | `FinancialData` |
-| `FetchFinancialRatios()` | Financial ratios only | `FinancialRatios` |
-| `FetchKeyStatistics()` | Key financial metrics | `FinancialSummary` |
-| `FetchIncomeStatement()` | Income statement data | `IncomeStatement` |
-| `FetchBalanceSheet()` | Balance sheet data | `BalanceSheet` |
-| `FetchCashFlow()` | Cash flow statement | `CashFlow` |
+
+| Method                   | Description                 | Returns            |
+| ------------------------ | --------------------------- | ------------------ |
+| `FetchFinancialData()`   | Complete financial analysis | `FinancialData`    |
+| `FetchFinancialRatios()` | Financial ratios only       | `FinancialRatios`  |
+| `FetchKeyStatistics()`   | Key financial metrics       | `FinancialSummary` |
+| `FetchIncomeStatement()` | Income statement data       | `IncomeStatement`  |
+| `FetchBalanceSheet()`    | Balance sheet data          | `BalanceSheet`     |
+| `FetchCashFlow()`        | Cash flow statement         | `CashFlow`         |
 
 #### News
-| Method | Parameters | Description |
-|--------|------------|-------------|
+
+| Method        | Parameters     | Description       |
+| ------------- | -------------- | ----------------- |
 | `FetchNews()` | `count, start` | Get news articles |
 
 ## Data Structures
 
 ### PriceValue
+
 ```go
 type PriceValue struct {
     Raw     float64 `json:"raw"`     // Raw numeric value
@@ -284,6 +290,7 @@ type PriceValue struct {
 ```
 
 ### PriceData (Historical)
+
 ```go
 type PriceData struct {
     Open   *float64 `json:"open"`
@@ -295,6 +302,7 @@ type PriceData struct {
 ```
 
 ### DividendInfo
+
 ```go
 type DividendInfo struct {
     DividendRate             *PriceValue `json:"dividendRate"`
@@ -308,7 +316,9 @@ type DividendInfo struct {
 ```
 
 ### FinancialRatios
+
 Key financial ratios including:
+
 - **Valuation**: P/E, P/B, P/S, Enterprise ratios
 - **Profitability**: ROE, ROA, Profit margins
 - **Liquidity**: Current ratio, Quick ratio
@@ -329,6 +339,7 @@ if err != nil {
 ```
 
 Common error scenarios:
+
 - Invalid ticker symbols
 - Network connectivity issues
 - API rate limiting
@@ -386,6 +397,7 @@ This package is for educational and research purposes. Always verify financial d
 ## Support
 
 If you find this package useful, please consider:
+
 - ⭐ Starring the repository
 - 🐛 Reporting bugs
 - 💡 Suggesting new features
