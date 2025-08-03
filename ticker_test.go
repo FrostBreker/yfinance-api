@@ -164,20 +164,26 @@ func TestFetchHistoricalData(t *testing.T) {
 				t.Error("Expected historical data but got empty result")
 			}
 
-			// Check data structure
-			for date, priceData := range data {
-				if date == "" {
+			// Check data structure - only check first entry to avoid long test runs
+			if len(data) > 0 {
+				// Check any one entry from the map
+				var sampleDate string
+				var samplePriceData PriceData
+				for date, priceData := range data {
+					sampleDate = date
+					samplePriceData = priceData
+					break
+				}
+
+				if sampleDate == "" {
 					t.Error("Expected non-empty date key")
 				}
 
 				// Check that we have some price data (at least one field should be non-nil)
-				if priceData.Open == nil && priceData.High == nil &&
-					priceData.Low == nil && priceData.Close == nil {
+				if samplePriceData.Open == nil && samplePriceData.High == nil &&
+					samplePriceData.Low == nil && samplePriceData.Close == nil {
 					t.Error("Expected at least one price field to be non-nil")
 				}
-
-				// Only check first few entries to avoid long test runs
-				break
 			}
 		})
 	}
@@ -218,7 +224,9 @@ func TestFetchNews(t *testing.T) {
 			}
 
 			// News might be empty, which is okay
-			for _, article := range news {
+			// Only check first article to avoid long test runs
+			if len(news) > 0 {
+				article := news[0]
 				if article.UUID == "" && article.Title == "" {
 					t.Error("Expected news article to have UUID or Title")
 				}
@@ -226,9 +234,6 @@ func TestFetchNews(t *testing.T) {
 				if article.Link == "" {
 					t.Error("Expected news article to have a link")
 				}
-
-				// Only check first article to avoid long test runs
-				break
 			}
 		})
 	}

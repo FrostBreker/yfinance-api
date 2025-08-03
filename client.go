@@ -1,10 +1,11 @@
 package yfinance_api
 
 import (
+	"crypto/rand"
 	"fmt"
 	"io"
 	"log/slog"
-	"math/rand"
+	"math/big"
 	"net/http"
 	"net/url"
 	"sync"
@@ -49,7 +50,17 @@ func (c *Client) get(url string, params url.Values) (*http.Response, error) {
 	for _, cookie := range c.cookies {
 		req.AddCookie(cookie)
 	}
-	req.Header.Set("User-Agent", UserAgents[rand.Intn(len(UserAgents))])
+
+	// Use crypto/rand for secure random number generation
+	randomIndex, err := rand.Int(rand.Reader, big.NewInt(int64(len(UserAgents))))
+	if err != nil {
+		slog.Error("Failed to generate secure random number", "err", err)
+		// Fallback to first user agent if random generation fails
+		req.Header.Set("User-Agent", UserAgents[0])
+	} else {
+		req.Header.Set("User-Agent", UserAgents[randomIndex.Int64()])
+	}
+
 	resp, err := c.client.Do(req)
 	if err != nil {
 		slog.Error("Failed to get data from Yahoo Finance API", "err", err)
